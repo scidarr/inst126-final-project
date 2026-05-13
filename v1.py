@@ -1,13 +1,11 @@
-#3.13.11 issue fixed
 import os
-import numpy as np  #random number generation
+import numpy as np
 
 def display_leaderboard():
     """Displays the persistent leaderboard.txt file at the start of the game."""
     print("\n" + "="*40)
     print("TUPLE OUT: The 6s")
     print("="*40)
-    
     filename = "leaderboard.txt"
     if os.path.exists(filename):
         try:
@@ -36,7 +34,45 @@ def get_num_dice():
         except ValueError:
             print("Invalid input. Please type a valid number.")
 
-def roll_dice(num_dice):
+def diceroll(num_dice):
     """Generates random integers between 1 and 6 using NumPy"""
-    # numpy.random.randint(low, high) evaluates [low, high) interval
     return np.random.randint(1, 7, size=num_dice).tolist()
+
+def get_fixed_dice(dice_list):
+    """Identifies values that appear at least twice in the roll, marking them as 'fixed'.
+    Demonstrates Pattern 7.1 (Lists) and Pattern 6.2 (for-loop)."""
+    value_unique = []
+    for val in dice_list:
+        if val not in value_unique:
+            value_unique.append(val)
+            
+    fixed_values = []
+    for value in value_unique:
+        if dice_list.count(value) >= 2:
+            fixed_values.append(value)
+    
+    fixed_indices = []
+    for val in dice_list:
+        if val in fixed_values:
+            fixed_indices.append(True)
+        else:
+            fixed_indices.append(False)
+            
+    return fixed_values, fixed_indices
+
+def evaluate_tuples(dice_list):
+    """Checks if three dice share the exact same value.
+    Returns status: 'super_tuple' (three 6s), 'tuple_out' (three 1-5s), or 'safe'.
+    Demonstrates Pattern 5.1/5.3 (if/elif/else blocks)."""
+    value_unique = []
+    for val in dice_list:
+        if val not in value_unique:
+            value_unique.append(val)
+            
+    for value in value_unique:
+        if dice_list.count(value) >= 3:
+            if value == 6:
+                return "super_tuple"  #Skips opponent turn if 3 6s
+            else:
+                return "tuple_out"    #0 pts
+    return "safe"
