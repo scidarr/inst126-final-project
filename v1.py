@@ -75,7 +75,7 @@ def evaluate_tuples(dice_list):
                 return "tuple_out"    #0 pts
     return "safe"
 def play_turn(player_name, opponent_name, scores, total_dice):
-    """turn phase for Human or Computer"""
+    """turn phase for User or Computer"""
     print(f"\n--- {player_name}'s Turn ---")
     current_dice = diceroll(total_dice)
     round_score = 0
@@ -117,7 +117,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             break
             
         #Determine Next Action based on Player Identity
-        if player_name == "Human":
+        if player_name == "User":
             choice = ""
             while choice not in ["roll", "stop"]:
                 choice = input("Do you want to re-roll unfixed dice or stop? (roll/stop): ").strip().lower()
@@ -126,7 +126,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
                     
             if choice == "stop":
                 round_score = current_sum
-                print(f"Human stops and successfully banks {round_score} points!")
+                print(f"User stops and successfully banks {round_score} points!")
                 break
         else:
             #AI Strategy Execution: Re-roll if total < 12 and unfixed dice exist
@@ -144,8 +144,52 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             new_rolls = diceroll(total_dice)
             for i in range(total_dice):
                 if not fixed_mask[i]:
-                    current_dice[i] = new_rolls[i]
-                    
+                    current_dice[i] = new_rolls[i]                
     #Commit round tallies
     scores[player_name] += round_score
     print(f"End of turn update -> {player_name} Total Score: {scores[player_name]}")
+
+def main():
+    """coordinates setup, scores, alternating game loops"""
+    display_leaderboard()
+    scores = {"User": 0, "AI": 0}
+    num_dice = get_num_dice()
+    print("\nGame initialized with " + str(num_dice) + " dice. First to reach or exceed 60 points wins!")
+    print("Let the rolling begin...")
+    print("----------------------------------------")
+    turn_number = 1
+    # Main game loop
+    while True:
+        print("\n=== ROUND " + str(turn_number) + " ===")
+        # User Turn
+        play_turn("User", "AI", scores, num_dice)
+        #User Win Condition
+        if scores["User"] >= 60:
+            print("\n*******************************************")
+            print("VICTORY! You win the game with " + str(scores['User']) + " points!")
+            print("*******************************************")
+            file = open("leaderboard.txt", "a")
+            file.write("Winner: User | Score: " + str(scores["User"]) + " pts\n")
+            file.close()
+            print("Successfully saved match results to persistent leaderboard.")
+            break
+        #AI Turn
+        play_turn("AI", "User", scores, num_dice)
+        #AI Win Condition
+        if scores["AI"] >= 60:
+            print("\n****************************************")
+            print("DEFEAT! Computer AI wins the game with " + str(scores['AI']) + " points.")
+            print("****************************************")
+            file = open("leaderboard.txt", "a")
+            file.write("Winner: AI | Score: " + str(scores["AI"]) + " pts\n")
+            file.close()
+            print("Successfully saved match results to persistent leaderboard!")
+            break
+        #Output
+        print("\n------------------------------")
+        print("Current Standings post-Round " + str(turn_number) + ":")
+        print(f"User: {scores['User']} | AI: {scores['AI']}")
+        print("------------------------------")
+        turn_number += 1
+if __name__ == "__main__":
+    main()
