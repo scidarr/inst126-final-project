@@ -83,7 +83,6 @@ def play_turn(player_name, opponent_name, scores, total_dice):
     while True:
         print(f"\nRolled Dice: {current_dice}")
         status = evaluate_tuples(current_dice)
-        
         #Condition 1: Super Tuple
         if status == "super_tuple":
             print("\n SUPER TUPLE ACTIVATED! Rolled three 6s!")
@@ -102,15 +101,12 @@ def play_turn(player_name, opponent_name, scores, total_dice):
         #Condition 3: Safe to evaluate fixed dice and choice
         fixed_vals, fixed_mask = get_fixed_dice(current_dice)
         current_sum = sum(current_dice)
-        
         if fixed_vals:
             print(f"Fixed values (cannot be rerolled): {fixed_vals}")
         else:
             print("No dice are currently fixed.")
-            
         print(f"Current showing round total: {current_sum}")
-        
-        #Check if all dice are fixed (forces a stop to prevent infinite locks)
+        #Check if all dice are fixed (forces a stop to prevent infinite)
         if all(fixed_mask):
             print("All dice are fixed! Automatically stopping and banking points.")
             round_score = current_sum
@@ -155,9 +151,10 @@ def main():
     scores = {"User": 0, "AI": 0}
     num_dice = get_num_dice()
     print("\nGame initialized with " + str(num_dice) + " dice. First to reach or exceed 60 points wins!")
-    print("Let the rolling begin...")
+    print("Lets get rolling...")
     print("----------------------------------------")
     turn_number = 1
+    
     # Main game loop
     while True:
         print("\n=== ROUND " + str(turn_number) + " ===")
@@ -168,26 +165,24 @@ def main():
             print("\n*******************************************")
             print("VICTORY! You win the game with " + str(scores['User']) + " points!")
             print("*******************************************")
-            file = open("leaderboard.txt", "a")
-            file.write("Winner: User | Score: " + str(scores["User"]) + " pts\n")
-            file.close()
-            print("Successfully saved match results to persistent leaderboard.")
-            break
+            with open("leaderboard.txt", "a") as file:
+                file.write("Winner: User | Score: " + str(scores["User"]) + " pts\n")
+            print("Saved match results to leaderboard!")
+            break   
         #AI Turn
         play_turn("AI", "User", scores, num_dice)
         #AI Win Condition
         if scores["AI"] >= 60:
             print("\n****************************************")
-            print("DEFEAT! Computer AI wins the game with " + str(scores['AI']) + " points.")
+            print("DEFEAT! Computer wins the game with " + str(scores['AI']) + " points.")
             print("****************************************")
-            file = open("leaderboard.txt", "a")
-            file.write("Winner: AI | Score: " + str(scores["AI"]) + " pts\n")
-            file.close()
-            print("Successfully saved match results to persistent leaderboard!")
-            break
+            with open("leaderboard.txt", "a") as file:
+                file.write("Winner: AI | Score: " + str(scores["AI"]) + " pts\n")
+            print("Saved match results to leaderboard!")
+            break 
         #Output
         print("\n------------------------------")
-        print("Current Standings post-Round " + str(turn_number) + ":")
+        print("Current Standings" + str(turn_number) + ":")
         print(f"User: {scores['User']} | AI: {scores['AI']}")
         print("------------------------------")
         turn_number += 1
