@@ -1,2 +1,4 @@
-Winner: AI | Score: 65 pts
-Winner: AI | Score: 65 pts
+Winner: AI | Rounds: 3
+Winner: AI | Rounds: 5
+Winner: AI | Rounds: 5
+Winner: dev | Rounds: 4
