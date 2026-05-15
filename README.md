@@ -1,5 +1,5 @@
 # Tuple Out: The 6s
-## Darren Chung 119715543
+## Darren Chung
 
 ## General
 Tuple out: The 6s is a turn based dice game that allows you to play against a Computer opponent, fighting to be the first to reach 60 points. You can choose to play with 3 dice, or all the way up to 6 dice. Try to push your luck and bank those points!
