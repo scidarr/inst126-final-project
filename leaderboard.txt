@@ -1,4 +1,1 @@
-Winner: AI | Rounds: 3
-Winner: AI | Rounds: 5
-Winner: AI | Rounds: 5
-Winner: dev | Rounds: 4
+Winner: dev | Rounds: 6

@@ -7,19 +7,22 @@ def display_leaderboard():
     print("\n" + "="*40)
     print("TUPLE OUT: The 6s")
     print("="*40)
-    filename = "leaderboard.txt"
-    if os.path.exists(filename):
-        try:
-            with open(filename, "r") as file:
-                contents = file.read()
-                if contents.strip():
-                    print(contents)
-                else:
-                    print("No champions recorded yet. Be the first!")
-        except Exception as e:
-            print(f"Error reading leaderboard: {e}")
-    else:
-        print("No prior leaderboard found. A new one will be created upon winning.")
+    for i in range(3, 7):
+        print("--- " + str(i) + " Dice Leaderboard ---")
+        filename = "leaderboard_" + str(i) + ".txt"
+        if os.path.exists(filename):
+            try:
+                with open(filename, "r") as file:
+                    contents = file.read()
+                    if contents.strip():
+                        print(contents)
+                    else:
+                        print("No champions recorded yet. Be the first!")
+            except Exception as e:
+                print(f"Error reading leaderboard: {e}")
+        else:
+            print("No prior leaderboard found. A new one will be created upon winning.")
+        print("")
     print("="*40 + "\n")
 
 def get_num_dice():
@@ -126,15 +129,18 @@ def play_turn(player_name, opponent_name, scores, total_dice):
         #Determine Next Action based on Player Identity
         if player_name != "AI":
             choice = ""
-            while choice not in ["roll", "stop"]:
-                choice = input("Do you want to re-roll unfixed dice or stop? (roll/stop): ").strip().lower()
-                if choice not in ["roll", "stop"]:
-                    print("Invalid input. Please type 'roll' or 'stop'.")
+            while choice not in ["r", "s", "roll", "stop"]:
+                choice = input("Do you want to re-roll unfixed dice or stop? (r/s): ").strip().lower()
+                if choice not in ["r", "s", "roll", "stop"]:
+                    print("Invalid input. Please type 'r' or 's'.")
                     
-            if choice == "stop":
+            if choice == "s" or choice == "stop":
+                choice = "stop"
                 round_score = current_sum
                 print(f"{player_name} stops and successfully banks {round_score} points!")
                 break
+            elif choice == "r" or choice == "roll":
+                choice = "roll"
         else:
             #AI Strategy Execution: Re-roll if total < 12 and unfixed dice exist
             time.sleep(0.8)
@@ -162,53 +168,59 @@ def main():
     """coordinates setup, scores, alternating game loops"""
     display_leaderboard()
     user_name = input("Enter your name: ")
-    scores = {user_name: 0, "AI": 0}
-    num_dice = get_num_dice()
-    print("\nGame initialized with " + str(num_dice) + " dice. First to reach or exceed 60 points wins!")
-    time.sleep(0.5)
-    print("Lets get rolling...")
-    time.sleep(0.5)
-    print("----------------------------------------")
-    turn_number = 1
     
-    # Main game loop
     while True:
+        scores = {user_name: 0, "AI": 0}
+        num_dice = get_num_dice()
+        print("\nGame initialized with " + str(num_dice) + " dice. First to reach or exceed 60 points wins!")
         time.sleep(0.5)
-        print("\n=== ROUND " + str(turn_number) + " ===")
-        # User Turn
-        play_turn(user_name, "AI", scores, num_dice)
-        #User Win Condition
-        if scores[user_name] >= 60:
-            time.sleep(0.5)
-            print("\n*******************************************")
-            print("VICTORY! You win the game in " + str(turn_number) + " rounds!")
-            print("*******************************************")
-            # Cleaned up to hit Pattern 4.1 (with open...as:)
-            with open("leaderboard.txt", "a") as file:
-                file.write("Winner: " + user_name + " | Rounds: " + str(turn_number) + "\n")
-            print("Saved match results to leaderboard!")
-            break   
-        #AI Turn
-        play_turn("AI", user_name, scores, num_dice)
-        #AI Win Condition
-        if scores["AI"] >= 60:
-            time.sleep(0.5)
-            print("\n****************************************")
-            print("DEFEAT! Computer wins the game in " + str(turn_number) + " rounds.")
-            print("****************************************")
-            with open("leaderboard.txt", "a") as file:
-                file.write("Winner: AI | Rounds: " + str(turn_number) + "\n")
-            print("Saved match results to leaderboard!")
-            break 
-        #Output
+        print("Lets get rolling...")
         time.sleep(0.5)
-        print("\n------------------------------")
-        print("Current Standings" + str(turn_number) + ":")
-        print(f"{user_name}: {scores[user_name]} | AI: {scores['AI']}")
-        print("------------------------------")
-        turn_number += 1
+        print("----------------------------------------")
+        turn_number = 1
         
-    display_leaderboard()
+        # Main game loop
+        while True:
+            time.sleep(0.5)
+            print("\n=== ROUND " + str(turn_number) + " ===")
+            # User Turn
+            play_turn(user_name, "AI", scores, num_dice)
+            #User Win Condition
+            if scores[user_name] >= 60:
+                time.sleep(0.5)
+                print("\n*******************************************")
+                print("VICTORY! You win the game in " + str(turn_number) + " rounds!")
+                print("*******************************************")
+                with open("leaderboard_" + str(num_dice) + ".txt", "a") as file:
+                    file.write("Winner: " + user_name + " | Rounds: " + str(turn_number) + "\n")
+                print("Saved match results to leaderboard!")
+                break   
+            #AI Turn
+            play_turn("AI", user_name, scores, num_dice)
+            #AI Win Condition
+            if scores["AI"] >= 60:
+                time.sleep(0.5)
+                print("\n****************************************")
+                print("DEFEAT! Computer wins the game in " + str(turn_number) + " rounds.")
+                print("****************************************")
+                with open("leaderboard_" + str(num_dice) + ".txt", "a") as file:
+                    file.write("Winner: AI | Rounds: " + str(turn_number) + "\n")
+                print("Saved match results to leaderboard!")
+                break 
+            #Output
+            time.sleep(0.5)
+            print("\n------------------------------")
+            print("Current Standings" + str(turn_number) + ":")
+            print(f"{user_name}: {scores[user_name]} | AI: {scores['AI']}")
+            print("------------------------------")
+            turn_number += 1
+            
+        display_leaderboard()
+        
+        play_again = input("Go again? (y/n): ").strip().lower()
+        if play_again != "y" and play_again != "yes":
+            print("Thanks for playing!")
+            break
 
 if __name__ == "__main__":
     main()

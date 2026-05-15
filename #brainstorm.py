@@ -9,3 +9,8 @@
 #Stop whenever you want to bank your current dice total 
 #Play alternates between player and the AI
 
+#updates i can do
+#multiple leaderboards
+#make re-rolls limited so players cant keep re-rolling
+#figure out how to make ai stronger
+#include powerups?
