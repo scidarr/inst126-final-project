@@ -53,7 +53,7 @@ def get_fixed_dice(dice_list):
         if val not in value_unique:
             value_unique.append(val)
             
-    # check if value appears 2 or more times to fix it
+    # check if value appears 2 or more times
     fixed_values = []
     for value in value_unique:
         if dice_list.count(value) >= 2:
@@ -112,6 +112,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             round_score = sum(current_dice)
             print(f"Sabotage successful! {opponent_name} loses {penalty} points (Current score: {scores[opponent_name]}).")
             print(f"{player_name} automatically banks {round_score} points this round!")
+            time.sleep(5)
             break    
             
         elif status == "tuple_out":
@@ -119,6 +120,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             print("\n Tupled Out!! Rolled three identical numbers (1-5).")
             print("Turn ends immediately. 0 points earned this round.")
             round_score = 0
+            time.sleep(5)
             break       
             
         fixed_vals, fixed_mask = get_fixed_dice(current_dice)
@@ -137,7 +139,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
 
         # check re-roll limit
         if rerolls >= 6:
-            time.sleep(0.5)
+            time.sleep(1)
             print("Re-roll limit reached! 10 point penalty and turn ends.")
             scores[player_name] -= 10
             if scores[player_name] < 0:
@@ -179,7 +181,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
                 if not fixed_mask[i]:
                     current_dice[i] = new_rolls[i]                
                     
-    time.sleep(0.5)
+    time.sleep(2)
     scores[player_name] += round_score
     print(f"End of turn update -> {player_name} Total Score: {scores[player_name]}")
 
@@ -193,7 +195,7 @@ def main():
         scores = {user_name: 0, "AI": 0}
         num_dice = get_num_dice()
         print("\nGame initialized with " + str(num_dice) + " dice. First to reach or exceed 60 points wins!")
-        time.sleep(0.5)
+        time.sleep(1)
         print("Lets get rolling...")
         time.sleep(0.5)
         print("----------------------------------------")
@@ -202,7 +204,7 @@ def main():
         
         # main match loop
         while True:
-            time.sleep(0.5)
+            time.sleep(1)
             print("\n=== ROUND " + str(turn_number) + " ===")
             
             # human turn
@@ -218,9 +220,11 @@ def main():
                 with open("leaderboard_" + str(num_dice) + ".txt", "a") as file:
                     file.write("Winner: " + user_name + " | Rounds: " + str(turn_number) + "\n")
                 print("Saved match results to leaderboard!")
+                time.sleep(3)
                 break     
                 
             # ai turn
+            time.sleep(3)
             play_turn("AI", user_name, scores, num_dice)
             score_history.append({"Turn": turn_number, "Player": "AI", "Score": scores["AI"]})
             
@@ -233,6 +237,7 @@ def main():
                 with open("leaderboard_" + str(num_dice) + ".txt", "a") as file:
                     file.write("Winner: AI | Rounds: " + str(turn_number) + "\n")
                 print("Saved match results to leaderboard!")
+                time.sleep(5)
                 break
                 
             time.sleep(0.5)
@@ -243,8 +248,8 @@ def main():
             turn_number += 1
             
         # display graph at the end of the match
-        print("\nVisualizing game performance graph... Please close the graph after viewing")
-        time.sleep(2)
+        print("\nVisualizing game performance graph... Please close the graph after viewing!")
+        time.sleep(5)
         df = pd.DataFrame(score_history)
         plt.clf()
         sns.lineplot(data=df, x="Turn", y="Score", hue="Player")
