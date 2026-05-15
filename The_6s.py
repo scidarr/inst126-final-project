@@ -6,6 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 def display_leaderboard():
+    """Displays the persistent leaderboard.txt file at the start of the game."""
     print("\n" + "="*40)
     print("TUPLE OUT: The 6s")
     print("="*40)
@@ -29,7 +30,7 @@ def display_leaderboard():
     print("="*40 + "\n")
 
 def get_num_dice():
-    # ask user for dice count and make sure it is a valid integer
+    """Ask user for dice count and make sure it is a valid integer"""
     while True:
         try:
             choice = input("Choose how many dice to play (3-6): ").strip()
@@ -42,11 +43,11 @@ def get_num_dice():
             print("Invalid input. Please type a valid number.")
 
 def diceroll(num_dice):
-    # use numpy for random rolling
+    """Generates random integers between 1 and 6 using NumPy"""
     return np.random.randint(1, 7, size=num_dice).tolist()
 
 def get_fixed_dice(dice_list):
-    # find unique values manually
+    """Find unique values manually"""
     value_unique = []
     for val in dice_list:
         if val not in value_unique:
@@ -69,7 +70,7 @@ def get_fixed_dice(dice_list):
     return fixed_values, fixed_indices
 
 def evaluate_tuples(dice_list, total_dice):
-    # find unique values to check counts
+    """Find unique values to check counts"""
     value_unique = []
     for val in dice_list:
         if val not in value_unique:
@@ -90,6 +91,7 @@ def evaluate_tuples(dice_list, total_dice):
     return "safe"
 
 def play_turn(player_name, opponent_name, scores, total_dice):
+    """Turn phase for User or Computer"""
     time.sleep(0.5)
     print(f"\n--- {player_name}'s Turn ---")
     current_dice = diceroll(total_dice)
@@ -182,6 +184,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
     print(f"End of turn update -> {player_name} Total Score: {scores[player_name]}")
 
 def main():
+    """Coordinates setup, scores, alternating game loops"""
     display_leaderboard()
     user_name = input("Enter your name: ")
     
