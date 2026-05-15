@@ -127,7 +127,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             print(f"Fixed values (cannot be rerolled): {fixed_vals}")
         else:
             print("No dice are currently fixed.")
-        print(f"Current showing round total: {current_sum}")
+        print(f"Current round total: {current_sum}")
         
         if all(fixed_mask):
             time.sleep(0.5)
@@ -161,7 +161,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             elif choice == "r" or choice == "roll":
                 choice = "roll"
         else:
-            time.sleep(0.8)
+            time.sleep(1)
             if current_sum < 12 and not all(fixed_mask):
                 print("AI Decision: Showing total is less than 12. AI chooses to RE-ROLL.")
                 choice = "roll"
@@ -243,7 +243,8 @@ def main():
             turn_number += 1
             
         # display graph at the end of the match
-        print("\nVisualizing game performance graph...")
+        print("\nVisualizing game performance graph... Please close the graph after viewing")
+        time.sleep(2)
         df = pd.DataFrame(score_history)
         plt.clf()
         sns.lineplot(data=df, x="Turn", y="Score", hue="Player")
