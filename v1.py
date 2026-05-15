@@ -78,7 +78,7 @@ def evaluate_tuples(dice_list, total_dice):
     for value in value_unique:
         if dice_list.count(value) >= tuple_req:
             if value == 6:
-                return "super_tuple"  #Skips opponent turn if 3 6s
+                return "super_tuple"  #-15pts
             else:
                 return "tuple_out"    #0 pts
     return "safe"
@@ -89,6 +89,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
     print(f"\n--- {player_name}'s Turn ---")
     current_dice = diceroll(total_dice)
     round_score = 0
+    rerolls = 0
     
     while True:
         time.sleep(0.5)
@@ -111,7 +112,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             print("Turn ends immediately. 0 points earned this round.")
             round_score = 0
             break       
-        #Condition 3: Safe to evaluate fixed dice and choice
+        #Condition 3: Fixed dices, 2 of the same numbers
         fixed_vals, fixed_mask = get_fixed_dice(current_dice)
         current_sum = sum(current_dice)
         if fixed_vals:
@@ -124,6 +125,15 @@ def play_turn(player_name, opponent_name, scores, total_dice):
             time.sleep(0.5)
             print("All dice are fixed! Automatically stopping and banking points.")
             round_score = current_sum
+            break
+
+        if rerolls >= 6:
+            time.sleep(0.5)
+            print("Re-roll limit reached! 10 point penalty and turn ends.")
+            scores[player_name] -= 10
+            if scores[player_name] < 0:
+                scores[player_name] = 0
+            round_score = 0
             break
             
         #Determine Next Action based on Player Identity
@@ -155,6 +165,7 @@ def play_turn(player_name, opponent_name, scores, total_dice):
                 
         #Perform partial re-roll on unfixed indices
         if choice == "roll":
+            rerolls += 1
             new_rolls = diceroll(total_dice)
             for i in range(total_dice):
                 if not fixed_mask[i]:

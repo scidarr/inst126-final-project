@@ -10,7 +10,8 @@
 #Play alternates between player and the AI
 
 #updates i can do
-#multiple leaderboards
-#make re-rolls limited so players cant keep re-rolling
 #figure out how to make ai stronger
 #include powerups?
+#readme
+#a way to quit the game
+#ai will trash talk?
